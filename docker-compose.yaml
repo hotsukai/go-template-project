@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+#  app:
+#    image: golang:1.21.0-alpine3.18
+#    command:
+#      - sh
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - mysql
+#    volumes:
+#      - .:/app
+#  redis:
+#    image: redis:6-alpine
+#    ports:
+#      - "127.0.0.1:6379:6379"
+
+  mysql:
+    image: mysql/mysql-server:8.0
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: "sample"
+      MYSQL_DATABASE: "sample"
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - type: volume
+        source: mysql_data
+        target: /var/lib/mysql
+
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    environment:
+      SWAGGER_JSON: /api/api-document.yaml
+    volumes:
+      - ./api-document.yaml:/api/api-document.yaml:ro
+    ports:
+      - "127.0.0.1:3000:8080"
+
+volumes:
+  mysql_data:
+    driver: local
